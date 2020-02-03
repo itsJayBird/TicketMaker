@@ -46,7 +46,7 @@ public class TelradForm extends JPanel {
         ping = new JTextField(5);
         complaint = new JTextField(15);
         notes = new JTextArea(10, 20);
-        scroll = new JScrollPane(scroll);
+        scroll = new JScrollPane(notes);
         submit = new JButton("Submit");
         newTicket = new JButton("New Ticket");
 
