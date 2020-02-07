@@ -72,17 +72,34 @@ public class MainFrame extends JFrame {
                 String notes = e.getNotes();
                 String pingTime = e.getPingTime();
                 String lanSpeed = e.getLanSpeed();
-                setSize(900, 400);
+                boolean pwrcy = e.getPwrCycle();
+                boolean down = e.isDown();
+                boolean rcable = e.isrCable();
+                boolean vmac = e.isvMac();
+                boolean connectedDev = e.isConnectedDevices();
+                boolean downStart = e.isDownAtStart();
+
+                setSize(1100, 550);
                 add(textPanel, BorderLayout.CENTER);
-                textPanel.appendText("Ubiquiti\n\n"
-                        + "Connected AP: " + connectedAP + "\n\n" 
-                        + "Complaint: \n" + complaint + "\n"
-                        + "Local Signal: " + localSignal + "d" + localChains + "\n"
-                        + "Remote Signal: " + remoteSignal + "d" + remoteChains + "\n"
-                        + "Noise Floor: " + localNoiseFloor + " | " + remoteNoiseFloor + "\n"
-                        + "Ping: " + pingTime + "\n"
-                        + "LAN Speed: " + lanSpeed + "\n"
-                        + "\n\nNotes: \n" + notes);   
+                textPanel.appendText("Ubiquiti\n\n");
+                if(downStart==true)textPanel.appendText("- Radio was down at the start\n\n");
+                if(down==false) {
+                    textPanel.appendText("Connected AP: " + connectedAP + "\n\n" 
+                            + "Complaint: \n" + complaint + "\n\n"
+                            + "Local Signal: -" + localSignal + "d" + localChains + "\n"
+                            + "Remote Signal: -" + remoteSignal + "d" + remoteChains + "\n"
+                            + "Noise Floor: -" + localNoiseFloor + " | -" + remoteNoiseFloor + "\n"
+                            + "Ping: " + pingTime + "ms\n"
+                            + "LAN Speed: " + lanSpeed + "\n\n");
+                } else {
+                    textPanel.appendText("Complaint: \n" + complaint + "\n\n");
+                }
+                textPanel.appendText("Troubleshooting Checklist: \n");
+                if(pwrcy==true)textPanel.appendText("- PowerCycled\n");
+                if(rcable==true)textPanel.appendText("- Reseated Cables\n");
+                if(vmac==true)textPanel.appendText("- Verified Router MAC\n");
+                if(connectedDev==true)textPanel.appendText("- Devices are connected\n");
+                textPanel.appendText("\nNotes: \n" + notes + "\n\n");
 
                 String toClipboard = textPanel.getText();
                 StringSelection stringSelection = new StringSelection(toClipboard);
@@ -95,6 +112,9 @@ public class MainFrame extends JFrame {
 
         ubntForm.setStringListener(new StringListener() {
             public void textEmitted(String text) {
+                if(text=="pcChecked") {
+                    textPanel.appendText("Power Cycled");
+                }
                 if(text == "newTicket") {
                     remove(ubntForm);
                     remove(textPanel);
@@ -105,7 +125,7 @@ public class MainFrame extends JFrame {
         });
 
         remove(selectionPanel);
-        setSize(600, 400);
+        setSize(750, 550);
     }
     private void telradGUI() {
         telradForm = new TelradForm();
@@ -122,16 +142,33 @@ public class MainFrame extends JFrame {
                 String complaint = e.getComplaint();
                 String notes = e.getNotes();
                 String ping = e.getPing();
-                setSize(900, 400);
+                boolean pwrcy = e.isPwrcy();
+                boolean down = e.isDown();
+                boolean rcable = e.isrCable();
+                boolean vmac = e.isvMac();
+                boolean connectedDev = e.isConnectedDevices();
+                boolean downStart = e.isDownAtStart();
+
+                setSize(1100, 550);
                 add(textPanel, BorderLayout.CENTER);
-                textPanel.appendText("Telrad\n\n"
-                        + "Complaint: \n" + complaint + "\n\n"
-                        + "Signal: " + signal + "\n"
-                        + "SINR: " + sinr + "\n"
-                        + "PCI: " + pci + " Cell: " + cell + "\n"
-                        + "Cell Locked: " + cellLocked + "\n"
-                        + "Ping: " + ping + "\n"
-                        + "\n\nNotes: \n\n" + notes);
+                textPanel.appendText("Telrad\n\n");
+                if(downStart==true)textPanel.appendText("- Radio was down at the start\n\n");
+                if(down==false) {
+                    textPanel.appendText("PCI: " + pci + " Cell: " + cell + "\n\n" 
+                            + "Complaint: \n" + complaint + "\n\n"
+                            + "Signal: -" + signal + "\n"
+                            + "SINR: " + sinr + "\n"
+                            + "Cell Locked: " + cellLocked + "\n"
+                            + "Ping: " + ping + "ms\n\n");
+                } else {
+                    textPanel.appendText("Complaint: \n" + complaint + "\n\n");
+                }
+                textPanel.appendText("Troubleshooting Checklist: \n");
+                if(pwrcy==true)textPanel.appendText("- PowerCycled\n");
+                if(rcable==true)textPanel.appendText("- Reseated Cables\n");
+                if(vmac==true)textPanel.appendText("- Verified Router MAC\n");
+                if(connectedDev==true)textPanel.appendText("- Devices are connected\n");
+                textPanel.appendText("\nNotes: \n" + notes + "\n\n");
 
                 String toClipboard = textPanel.getText();
                 StringSelection stringSelection = new StringSelection(toClipboard);
@@ -150,10 +187,9 @@ public class MainFrame extends JFrame {
                     selectionPanel();
                 }
             }
-
         });
         remove(selectionPanel);
-        setSize(600, 400);
+        setSize(720, 500);
     }
     private void mimosaGUI() {
         mimosaForm = new MimosaForm();
@@ -168,15 +204,32 @@ public class MainFrame extends JFrame {
                 String ping = e.getPing();
                 String comp = e.getComplaint();
                 String notes = e.getNotes();
-                setSize(900, 400);
+                boolean pwrcy = e.isPwrcy();
+                boolean down = e.isDown();
+                boolean rcable = e.isrCable();
+                boolean vmac = e.isvMac();
+                boolean connectedDev = e.isConnectedDevices();
+                boolean downStart = e.isDownAtStart();
+
+                setSize(1100, 550);
                 add(textPanel, BorderLayout.CENTER);
-                textPanel.appendText("Mimosa\n\n"
-                        + "Complaint: \n" + comp + "\n\n"
-                        + "AP: " + ap + "\n"
-                        + "Signal: " + signal + "\n"
-                        + "LAN Speed: " + lan + "\n"
-                        + "Ping: " + ping + "\n"
-                        + "\n\nNotes: \n" + notes);
+                textPanel.appendText("Mimosa\n\n");
+                if(downStart==true)textPanel.appendText("- Radio was down at the start\n\n");
+                if(down==false) {
+                    textPanel.appendText("Connected AP: " + ap + "\n\n" 
+                            + "Complaint: \n" + comp + "\n\n"
+                            + "Signal: -" + signal + "\n"
+                            + "LAN Speed: " + lan + "\n"
+                            + "Ping: " + ping + "ms\n\n");
+                } else {
+                    textPanel.appendText("Complaint: \n" + comp + "\n\n");
+                }
+                textPanel.appendText("Troubleshooting Checklist: \n");
+                if(pwrcy==true)textPanel.appendText("- PowerCycled\n");
+                if(rcable==true)textPanel.appendText("- Reseated Cables\n");
+                if(vmac==true)textPanel.appendText("- Verified Router MAC\n");
+                if(connectedDev==true)textPanel.appendText("- Devices are connected\n");
+                textPanel.appendText("\nNotes: \n" + notes + "\n\n");
 
                 String toClipboard = textPanel.getText();
                 StringSelection stringSelection = new StringSelection(toClipboard);
@@ -198,7 +251,7 @@ public class MainFrame extends JFrame {
 
         });
         remove(selectionPanel);
-        setSize(600, 400);
+        setSize(720, 550);
     }
     private void camGUI() {
         cambiumForm = new CambiumForm();
@@ -214,16 +267,33 @@ public class MainFrame extends JFrame {
                 String ping = e.getPing();
                 String complaint = e.getComplaint();
                 String notes = e.getNotes();
-                setSize(900, 400);
+                boolean pwrcy = e.isPwrcy();
+                boolean down = e.isDown();
+                boolean rcable = e.isrCable();
+                boolean vmac = e.isvMac();
+                boolean connectedDev = e.isConnectedDevices();
+                boolean downStart = e.isDownAtStart();
+                setSize(1100, 550);
                 add(textPanel, BorderLayout.CENTER);
-                textPanel.appendText("Cambium\n\n"
-                        + "Complaint: \n" + complaint + "\n\n"
-                        + "AP/Color Code: " + ap + "\n"
-                        + "Signal: " + signal + "\n"
-                        + "SINR: " + sinr + "\n"
-                        + "LAN Speed: " + lan + "\n"
-                        + "Ping: " + ping + "\n"
-                        + "\n\nNotes: \n" + notes);
+                textPanel.appendText("Cambium\n\n");
+                if(downStart==true)textPanel.appendText("- Radio was down at the start\n\n");
+                if(down==false) {
+                    textPanel.appendText("Connected AP: " + ap + "\n\n" 
+                            + "Complaint: \n" + complaint + "\n\n"
+                            + "Signal: -" + signal + "\n"
+                            + "SINR: " + sinr + "\n"
+                            + "LAN Speed: " + lan + "\n"
+                            + "Ping: " + ping + "ms\n\n");
+                } else {
+                    textPanel.appendText("Complaint: \n" + complaint + "\n\n");
+                }
+                textPanel.appendText("Troubleshooting Checklist: \n");
+                if(pwrcy==true)textPanel.appendText("- PowerCycled\n");
+                if(rcable==true)textPanel.appendText("- Reseated Cables\n");
+                if(vmac==true)textPanel.appendText("- Verified Router MAC\n");
+                if(connectedDev==true)textPanel.appendText("- Devices are connected\n");
+                textPanel.appendText("\nNotes: \n" + notes + "\n\n");
+                
                 String toClipboard = textPanel.getText();
                 StringSelection stringSelection = new StringSelection(toClipboard);
                 Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
@@ -242,7 +312,7 @@ public class MainFrame extends JFrame {
                 }
             } 
         });
-        setSize(600, 400);
+        setSize(720, 550);
         remove(selectionPanel);
     }
 }

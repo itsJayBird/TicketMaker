@@ -15,6 +15,12 @@ public class UbiqEvent extends EventObject {
     private String lanSpeed;
     private String complaint;
     private String notes;
+    private boolean pwrcy;
+    private boolean down;
+    private boolean rCable;
+    private boolean vMac;
+    private boolean connectedDevices;
+    private boolean downAtStart;
     
     public UbiqEvent(Object source) {
         super(source);
@@ -22,7 +28,8 @@ public class UbiqEvent extends EventObject {
     
     public UbiqEvent(Object source, String localSignal, String localChains, String remoteSignal, String remoteChains,
                      String connectedAP, String localNoiseFloor, String remoteNoiseFloor, String pingTime, 
-                     String lanSpeed, String complaint, String notes) {
+                     String lanSpeed, String complaint, String notes, boolean pwrcy, boolean down, boolean rCable, boolean vMac,
+                     boolean connectedDevices, boolean downAtStart) {
         super(source);
         this.localSignal = localSignal;
         this.localChains = localChains;
@@ -35,6 +42,12 @@ public class UbiqEvent extends EventObject {
         this.lanSpeed = lanSpeed;
         this.notes = notes;
         this.complaint = complaint;
+        this.pwrcy = pwrcy;
+        this.down = down;
+        this.rCable = rCable;
+        this.vMac = vMac;
+        this.connectedDevices = connectedDevices;
+        this.downAtStart = downAtStart;
     }
     public String getLocalSignal() {
         return localSignal;
@@ -68,5 +81,28 @@ public class UbiqEvent extends EventObject {
     }
     public String getNotes() {
         return notes;
+    }
+    public boolean getPwrCycle() {
+        return pwrcy;
+    }
+
+    public boolean isDown() {
+        return down;
+    }
+
+    public boolean isrCable() {
+        return rCable;
+    }
+
+    public boolean isvMac() {
+        return vMac;
+    }
+
+    public boolean isConnectedDevices() {
+        return connectedDevices;
+    }
+
+    public boolean isDownAtStart() {
+        return downAtStart;
     }
 }
