@@ -3,11 +3,13 @@ package ticketMaker;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -30,6 +32,12 @@ public class UbiquitiForm extends JPanel {
     private JButton submitBtn;
     private JButton newTicket;
     private JScrollPane scroll;
+    private JCheckBox powerCycle;
+    private JCheckBox reseatCable;
+    private JCheckBox devicesConnected;
+    private JCheckBox verifiedMAC;
+    private JCheckBox radioDown;
+    private JCheckBox downAtStart;
     
     private UbiquitiListener ubiquitiListener;
     private StringListener stringListener;
@@ -37,7 +45,7 @@ public class UbiquitiForm extends JPanel {
     public UbiquitiForm() {
         // set dimension
         Dimension dim = getPreferredSize();
-        dim.width = 600;
+        dim.width = 750;
         setPreferredSize(dim);
         
         // instantiate the needed text fields
@@ -51,10 +59,18 @@ public class UbiquitiForm extends JPanel {
         lanSpeed = new JTextField(10);
         pingTime = new JTextField(5);
         complaint = new JTextField(20);
-        notes = new JTextArea(10, 20);
+        notes = new JTextArea(10, 42);
+        notes.setLineWrap(true);
         scroll = new JScrollPane(notes);
         submitBtn = new JButton("Submit");
         newTicket = new JButton("New Ticket");
+        
+        powerCycle = new JCheckBox("Power Cycle");
+        reseatCable = new JCheckBox("Reseat Cable");
+        devicesConnected = new JCheckBox("Devices Connected");
+        verifiedMAC = new JCheckBox("Verified Router MAC");
+        radioDown = new JCheckBox("Radio is still down");
+        downAtStart = new JCheckBox("Radio was down at the start");
         
         // set action listener for button to grab information from fields
         submitBtn.addActionListener(new ActionListener() {
@@ -70,10 +86,17 @@ public class UbiquitiForm extends JPanel {
                 String ping = pingTime.getText();
                 String comp = complaint.getText();
                 String nts = notes.getText();
+                boolean pwr = powerCycle.isSelected();
+                boolean down = radioDown.isSelected();
+                boolean rCable = reseatCable.isSelected();
+                boolean vMac = verifiedMAC.isSelected();
+                boolean cnct = devicesConnected.isSelected();
+                boolean dwnAtStart = downAtStart.isSelected();
                 
                 // uses the ubiquiti event class to pass the information to main frame
                 UbiqEvent ev = new UbiqEvent(this, locSignal, locChains, remSignal, remChains,
-                                             ap, localNF, remoteNF, ping, LAN, comp, nts);
+                                             ap, localNF, remoteNF, ping, LAN, comp, nts, pwr,
+                                             down, rCable, vMac, cnct, dwnAtStart);
                 
                 if(ubiquitiListener != null) {
                     ubiquitiListener.FormEventOccurred(ev);
@@ -89,6 +112,35 @@ public class UbiquitiForm extends JPanel {
                     if(stringListener != null) {
                         stringListener.textEmitted("newTicket");
                     }
+                }
+            }
+        });
+        
+        // action listener for radio is up button
+        radioDown.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                boolean rDown = radioDown.isSelected();
+                if(rDown==true) {
+                    localSignal.setEnabled(false);
+                    localChains.setEnabled(false);
+                    localNoiseFloor.setEnabled(false);
+                    remoteSignal.setEnabled(false);
+                    remoteChains.setEnabled(false);
+                    remoteNoiseFloor.setEnabled(false);
+                    connectedAP.setEnabled(false);
+                    lanSpeed.setEnabled(false);
+                    pingTime.setEnabled(false);
+                }
+                if(rDown==false) {
+                    localSignal.setEnabled(true);
+                    localChains.setEnabled(true);
+                    localNoiseFloor.setEnabled(true);
+                    remoteSignal.setEnabled(true);
+                    remoteChains.setEnabled(true);
+                    remoteNoiseFloor.setEnabled(true);
+                    connectedAP.setEnabled(true);
+                    lanSpeed.setEnabled(true);
+                    pingTime.setEnabled(true);
                 }
             }
         });
@@ -203,8 +255,32 @@ public class UbiquitiForm extends JPanel {
         gc.anchor = GridBagConstraints.LINE_START;
         add(pingTime, gc);
         
-        // next row//
+        // next row //
+        gc.gridx = 1;
         gc.gridy = 6;
+        gc.insets = new Insets(10, 0, 0, 0);
+        add(powerCycle, gc);
+        
+        gc.gridx = 2;
+        add(reseatCable, gc);
+        
+        gc.gridy = 7;
+        gc.gridx = 1;
+        gc.insets = new Insets(10, 0, 0, 0);
+        add(devicesConnected, gc);
+        
+        gc.gridx = 2;
+        add(verifiedMAC, gc);
+        
+        gc.gridy = 8;
+        gc.gridx = 1;
+        add(radioDown, gc);
+        
+        gc.gridx = 2;
+        add(downAtStart, gc);
+        
+        // next row //
+        gc.gridy = 9;
         gc.gridheight = 4;
         gc.gridwidth = 15;
         gc.gridx = 0;
@@ -216,7 +292,7 @@ public class UbiquitiForm extends JPanel {
         
         // next row //
         gc.weighty = 3;
-        gc.gridy = 10;
+        gc.gridy = 13;
         gc.gridheight = 1;
         gc.gridwidth = 1;
         gc.gridx = 1;

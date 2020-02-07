@@ -3,11 +3,13 @@ package ticketMaker;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -28,13 +30,19 @@ public class TelradForm extends JPanel {
     private JScrollPane scroll;
     private JButton submit;
     private JButton newTicket;
+    private JCheckBox powerCycle;
+    private JCheckBox reseatCable;
+    private JCheckBox devicesConnected;
+    private JCheckBox verifiedMAC;
+    private JCheckBox radioDown;
+    private JCheckBox downAtStart;
 
     private TelradListener formListener;
     private StringListener stringListener;
 
     public TelradForm() {
         Dimension dim = getPreferredSize();
-        dim.width = 600;
+        dim.width = 720;
         setPreferredSize(dim);
 
         // instantiate fields
@@ -45,10 +53,18 @@ public class TelradForm extends JPanel {
         cellLocked = new JTextField(8);
         ping = new JTextField(5);
         complaint = new JTextField(15);
-        notes = new JTextArea(10, 20);
-        scroll = new JScrollPane(notes);
+        notes = new JTextArea(10, 42);
+        notes.setLineWrap(true);
+        scroll = new JScrollPane(scroll);
         submit = new JButton("Submit");
         newTicket = new JButton("New Ticket");
+        
+        powerCycle = new JCheckBox("Power Cycle");
+        reseatCable = new JCheckBox("Reseat Cable");
+        devicesConnected = new JCheckBox("Devices Connected");
+        verifiedMAC = new JCheckBox("Verified Router MAC");
+        radioDown = new JCheckBox("Radio is still down");
+        downAtStart = new JCheckBox("Radio was down at the start");
 
         // action listener for submit button
         submit.addActionListener(new ActionListener() {
@@ -61,8 +77,15 @@ public class TelradForm extends JPanel {
                 String comp = complaint.getText();
                 String nts = notes.getText();
                 String png = ping.getText();
+                boolean pwr = powerCycle.isSelected();
+                boolean rcable = reseatCable.isSelected();
+                boolean devConnect = devicesConnected.isSelected();
+                boolean vmac = verifiedMAC.isSelected();
+                boolean rdown = radioDown.isSelected();
+                boolean downStart = downAtStart.isSelected();
 
-                TelradEvent ev = new TelradEvent(this, sig, sin, PCI, Cell, isLocked, comp, nts, png);
+                TelradEvent ev = new TelradEvent(this, sig, sin, PCI, Cell, isLocked, comp, nts, png,
+                                                 pwr, rdown, rcable, vmac, devConnect, downStart);
 
                 if(formListener != null) {
                     formListener.FormEventOccurred(ev);
@@ -81,6 +104,29 @@ public class TelradForm extends JPanel {
                 }
             }
 
+        });
+        
+     // action listener for radio is up button
+        radioDown.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                boolean rDown = radioDown.isSelected();
+                if(rDown==true) {
+                    signal.setEnabled(false);
+                    sinr.setEnabled(false);
+                    pci.setEnabled(false);
+                    cell.setEnabled(false);
+                    cellLocked.setEnabled(false);
+                    ping.setEnabled(false);
+                }
+                if(rDown==false) {
+                    signal.setEnabled(true);
+                    sinr.setEnabled(true);
+                    pci.setEnabled(true);
+                    cell.setEnabled(true);
+                    cellLocked.setEnabled(true);
+                    ping.setEnabled(true);
+                }
+            }
         });
 
         // setting a border for the overall window
@@ -170,7 +216,31 @@ public class TelradForm extends JPanel {
         add(ping, gc);
         
         // next row //
+        gc.gridx = 1;
         gc.gridy = 4;
+        gc.insets = new Insets(10, 0, 0, 0);
+        add(powerCycle, gc);
+        
+        gc.gridx = 2;
+        add(reseatCable, gc);
+        
+        gc.gridy = 5;
+        gc.gridx = 1;
+        gc.insets = new Insets(10, 0, 0, 0);
+        add(devicesConnected, gc);
+        
+        gc.gridx = 2;
+        add(verifiedMAC, gc);
+        
+        gc.gridy = 6;
+        gc.gridx = 1;
+        add(radioDown, gc);
+        
+        gc.gridx = 2;
+        add(downAtStart, gc);
+        
+        // next row //
+        gc.gridy = 7;
         gc.gridheight = 4;
         gc.gridwidth = 15;
         gc.gridx = 0;
@@ -179,14 +249,14 @@ public class TelradForm extends JPanel {
         
         gc.gridx = 1;
         gc.anchor = GridBagConstraints.LINE_START;
-        add(scroll, gc);
+        add(notes, gc);
         
         // next row //
         gc.weighty = 3;
         gc.gridheight = 1;
         gc.gridwidth = 1;
         
-        gc.gridy = 9;
+        gc.gridy = 13;
         gc.gridx = 1;
         gc.anchor = GridBagConstraints.CENTER;
         add(submit, gc);

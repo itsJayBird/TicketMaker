@@ -10,12 +10,19 @@ public class MimosaEvent extends EventObject {
     private String complaint;
     private String notes;
     private String ping;
+    private boolean pwrcy;
+    private boolean down;
+    private boolean rCable;
+    private boolean vMac;
+    private boolean connectedDevices;
+    private boolean downAtStart;
     
     public MimosaEvent(Object source) {
         super(source);
     }
     public MimosaEvent(Object source, String signal, String connectedAP, String lanSpeed,
-                       String complaint, String notes, String ping) {
+                       String complaint, String notes, String ping, boolean pwrcy, boolean down,
+                       boolean rcable, boolean vmac, boolean connectedDev, boolean downStart) {
         super(source);
         this.signal = signal;
         this.connectedAP = connectedAP;
@@ -23,6 +30,12 @@ public class MimosaEvent extends EventObject {
         this.complaint = complaint;
         this.notes = notes;
         this.ping = ping;
+        this.pwrcy = pwrcy;
+        this.down = down;
+        this.rCable = rcable;
+        this.vMac = vmac;
+        this.connectedDevices = connectedDev;
+        this.downAtStart = downStart;
     }
     
     public String getSignal() {
@@ -42,5 +55,23 @@ public class MimosaEvent extends EventObject {
     }
     public String getPing() {
         return ping;
+    }
+    public boolean isPwrcy() {
+        return pwrcy;
+    }
+    public boolean isDown() {
+        return down;
+    }
+    public boolean isrCable() {
+        return rCable;
+    }
+    public boolean isvMac() {
+        return vMac;
+    }
+    public boolean isConnectedDevices() {
+        return connectedDevices;
+    }
+    public boolean isDownAtStart() {
+        return downAtStart;
     }
 }
