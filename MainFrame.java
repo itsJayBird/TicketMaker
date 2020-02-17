@@ -226,17 +226,17 @@ public class MainFrame extends JFrame implements FormListener, CheckEventListene
 
         // next the checklist
         textPanel.appendText("\nTroubleshooting Checklist: \n\n");
-        if(powerCycleRadio==true)textPanel.appendText("- Power cycle radio for minimum of 2 min \n");
-        if(powerCycleRouter==true)textPanel.appendText("- Power cycle router for a minimum of 2 min \n");
-        if(custRouter==true)textPanel.appendText("- Customer owned router \n");
-        if(reseatCable==true)textPanel.appendText("- Reseated cables \n");
-        if(verifiedCable==true)textPanel.appendText("- Verified cable configuration \n");
-        if(verifiedPower==true)textPanel.appendText("- Verified power to devices \n");
-        if(verifiedMAC==true)textPanel.appendText("- Verified router MAC \n");
-        if(movedAP==true)textPanel.appendText("- Moved to better serving AP \n");
-        if(devicesConnected==true)textPanel.appendText("- Checked that devices are connected \n");
-        if(upgradeRouter==true)textPanel.appendText("- Upgraded router firmware \n");
-        if(upgradeRadio==true)textPanel.appendText("- Upgraded radio firmware \n");
+        if(powerCycleRadio==true){textPanel.appendText("- Power cycle radio for minimum of 2 min \n");}
+        if(powerCycleRouter==true){textPanel.appendText("- Power cycle router for a minimum of 2 min \n");}
+        if(custRouter==true){textPanel.appendText("- Customer owned router \n");}
+        if(reseatCable==true){textPanel.appendText("- Reseated cables \n");}
+        if(verifiedCable==true){textPanel.appendText("- Verified cable configuration \n");}
+        if(verifiedPower==true){textPanel.appendText("- Verified power to devices \n");}
+        if(verifiedMAC==true){textPanel.appendText("- Verified router MAC \n");}
+        if(movedAP==true){textPanel.appendText("- Moved to better serving AP \n");}
+        if(devicesConnected==true){textPanel.appendText("- Checked that devices are connected \n");}
+        if(upgradeRouter==true){textPanel.appendText("- Upgraded router firmware \n");}
+        if(upgradeRadio==true){textPanel.appendText("- Upgraded radio firmware \n");}
 
         // finally notes
         textPanel.appendText("\nNotes: \n\n" + note);
