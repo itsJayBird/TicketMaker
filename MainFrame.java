@@ -232,6 +232,7 @@ public class MainFrame extends JFrame implements FormListener, CheckEventListene
         if(reseatCable==true)textPanel.appendText("- Reseated cables \n");
         if(verifiedCable==true)textPanel.appendText("- Verified cable configuration \n");
         if(verifiedPower==true)textPanel.appendText("- Verified power to devices \n");
+        if(verifiedMAC==true)textPanel.appendText("- Verified router MAC \n");
         if(movedAP==true)textPanel.appendText("- Moved to better serving AP \n");
         if(devicesConnected==true)textPanel.appendText("- Checked that devices are connected \n");
         if(upgradeRouter==true)textPanel.appendText("- Upgraded router firmware \n");
