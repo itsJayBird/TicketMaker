@@ -1,318 +1,102 @@
-package ticketMaker;
+package ticketMaster;
 
 import java.awt.BorderLayout;
-import java.awt.datatransfer.*;
-import java.awt.Toolkit;
-import java.awt.datatransfer.Clipboard;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
+import javax.swing.JButton;
 import javax.swing.JFrame;
 
 public class MainFrame extends JFrame {
-    private SelectionPanel selectionPanel;
+    private Menu menu;
+    private Form form;
+    private CheckList checkList;
+    private JButton confirm;
+    private String currForm;
     private TextPanel textPanel;
-    private UbiquitiForm ubntForm;
-    private TelradForm telradForm;
-    private MimosaForm mimosaForm;
-    private CambiumForm cambiumForm;
+    private String complaint;
+    private String ap;
+    private String signal0;
+    private String signal1;
+    private String chain0;
+    private String chain1;
+    private String sinr0;
+    private String sinr1;
+    private String lan;
+    private String ping;
 
     public MainFrame() {
-        super("Ticket Builder");
+        super("Resound Ticket Builder");
         setLayout(new BorderLayout());
+        form = new Form("none");
+        menu = new Menu();
+        checkList = new CheckList();
+        confirm = new JButton("Confirm");
 
-        selectionPanel();
+        menu.setStringListener(new StringListener() {
+            public void textEmitted(String text) {
+                remove(form);
+                textPanel = new TextPanel();
+                form = new Form(text);
+                add(form, BorderLayout.WEST);
+                add(checkList, BorderLayout.EAST);
+                add(confirm, BorderLayout.SOUTH);
+                validate();
+                repaint();
+                setSize(1000, 430);
+                setCurrForm(text);
+            }
+        });
+
+        checkList.setRadioDownListener(new RadioDownListener() {
+            public void booleanEmitted(boolean check) {
+                if(check==true) {
+                    switch(currForm) {
+                    case "ubnt":
+                        form.disableUbnt();
+                    }
+                } else if(check==false) {
+                    switch(currForm) {
+                    case "ubnt":
+                        form.enableUbnt();
+                    }
+                }
+            }
+        });
+
+        confirm.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                form.getUbntInfo();
+                form.setFormListener(new FormListener() {
+                    public void formEventOccured(FormEvent e) {
+                        String complaint = e.getComplaint();
+                        String ping = e.getPing();
+                        String ap = e.getAp();
+                            signal0 = e.getSignal0();
+                            signal1 = e.getSignal1();
+                            chain0 = e.getChain0();
+                            chain1 = e.getChain1();
+                            sinr0 = e.getSinr0();
+                            sinr1 = e.getSinr1();
+                            sinr0 = e.getLan();
+                            System.out.println("local signal: " + signal0);
+                    }
+
+                });
+
+            }
+        });
+
+        add(menu, BorderLayout.NORTH);
+        add(form, BorderLayout.CENTER);
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setVisible(true);
+        setSize(500, 500);
+        setResizable(false);
     }
 
-    private void selectionPanel() {
-
-        selectionPanel = new SelectionPanel(); // this panel will ask what technology we are using
-
-        add(selectionPanel, BorderLayout.CENTER);
-        selectionPanel.setSelectionListener(new SelectionListener() {
-            public void selectionEventOccured(SelectionEvent e) {
-                String radioTech = e.getRadioTech();
-
-                switch(radioTech) {
-                case "Ubiquiti":
-                    ubiquitiGUI();
-                    break;
-                case "Telrad":
-                    telradGUI();
-                    break;
-                case "Mimosa":
-                    mimosaGUI();
-                    break;
-                case "Cambium":
-                    camGUI();
-                    break;
-                }
-            }
-        });
-
-        setSize(400, 300);
-    }
-
-    private void ubiquitiGUI() {
-        ubntForm = new UbiquitiForm();
-        textPanel = new TextPanel();
-        add(ubntForm, BorderLayout.WEST);
-
-        ubntForm.setUbiquitiListener(new UbiquitiListener() {
-            public void FormEventOccurred(UbiqEvent e) {
-                String localSignal = e.getLocalSignal();
-                String localChains = e.getLocalChains();
-                String localNoiseFloor = e.getLocalNoiseFloor();
-                String remoteSignal = e.getRemoteSignal();
-                String remoteChains = e.getRemoteChains();
-                String remoteNoiseFloor = e.getRemoteNoiseFloor();
-                String connectedAP = e.getConnectedAP();
-                String complaint = e.getComplaint();
-                String notes = e.getNotes();
-                String pingTime = e.getPingTime();
-                String lanSpeed = e.getLanSpeed();
-                boolean pwrcy = e.getPwrCycle();
-                boolean down = e.isDown();
-                boolean rcable = e.isrCable();
-                boolean vmac = e.isvMac();
-                boolean connectedDev = e.isConnectedDevices();
-                boolean downStart = e.isDownAtStart();
-
-                setSize(1100, 550);
-                add(textPanel, BorderLayout.CENTER);
-                textPanel.appendText("Ubiquiti\n\n");
-                if(downStart==true)textPanel.appendText("- Radio was down at the start\n\n");
-                if(down==false) {
-                    textPanel.appendText("Connected AP: " + connectedAP + "\n\n" 
-                            + "Complaint: \n" + complaint + "\n\n"
-                            + "Local Signal: -" + localSignal + "d" + localChains + "\n"
-                            + "Remote Signal: -" + remoteSignal + "d" + remoteChains + "\n"
-                            + "Noise Floor: -" + localNoiseFloor + " | -" + remoteNoiseFloor + "\n"
-                            + "Ping: " + pingTime + "ms\n"
-                            + "LAN Speed: " + lanSpeed + "\n\n");
-                } else {
-                    textPanel.appendText("Complaint: \n" + complaint + "\n\n");
-                }
-                textPanel.appendText("Troubleshooting Checklist: \n");
-                if(pwrcy==true)textPanel.appendText("- PowerCycled\n");
-                if(rcable==true)textPanel.appendText("- Reseated Cables\n");
-                if(vmac==true)textPanel.appendText("- Verified Router MAC\n");
-                if(connectedDev==true)textPanel.appendText("- Devices are connected\n");
-                textPanel.appendText("\nNotes: \n" + notes + "\n\n");
-
-                String toClipboard = textPanel.getText();
-                StringSelection stringSelection = new StringSelection(toClipboard);
-                Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-                clipboard.setContents(stringSelection, null);
-
-                textPanel.appendText("\n\n Text has been copied to clipboard!");
-            }
-        });
-
-        ubntForm.setStringListener(new StringListener() {
-            public void textEmitted(String text) {
-                if(text=="pcChecked") {
-                    textPanel.appendText("Power Cycled");
-                }
-                if(text == "newTicket") {
-                    remove(ubntForm);
-                    remove(textPanel);
-                    selectionPanel();
-                }
-            }
-
-        });
-
-        remove(selectionPanel);
-        setSize(750, 550);
-    }
-    private void telradGUI() {
-        telradForm = new TelradForm();
-        textPanel = new TextPanel();
-        add(telradForm, BorderLayout.WEST);
-
-        telradForm.setFormListener(new TelradListener() {
-            public void FormEventOccurred(TelradEvent e) {
-                String signal = e.getSignal();
-                String sinr = e.getSinr();
-                String pci = e.getPci();
-                String cell = e.getCell();
-                String cellLocked = e.getCellLocked();
-                String complaint = e.getComplaint();
-                String notes = e.getNotes();
-                String ping = e.getPing();
-                boolean pwrcy = e.isPwrcy();
-                boolean down = e.isDown();
-                boolean rcable = e.isrCable();
-                boolean vmac = e.isvMac();
-                boolean connectedDev = e.isConnectedDevices();
-                boolean downStart = e.isDownAtStart();
-
-                setSize(1100, 550);
-                add(textPanel, BorderLayout.CENTER);
-                textPanel.appendText("Telrad\n\n");
-                if(downStart==true)textPanel.appendText("- Radio was down at the start\n\n");
-                if(down==false) {
-                    textPanel.appendText("PCI: " + pci + " Cell: " + cell + "\n\n" 
-                            + "Complaint: \n" + complaint + "\n\n"
-                            + "Signal: -" + signal + "\n"
-                            + "SINR: " + sinr + "\n"
-                            + "Cell Locked: " + cellLocked + "\n"
-                            + "Ping: " + ping + "ms\n\n");
-                } else {
-                    textPanel.appendText("Complaint: \n" + complaint + "\n\n");
-                }
-                textPanel.appendText("Troubleshooting Checklist: \n");
-                if(pwrcy==true)textPanel.appendText("- PowerCycled\n");
-                if(rcable==true)textPanel.appendText("- Reseated Cables\n");
-                if(vmac==true)textPanel.appendText("- Verified Router MAC\n");
-                if(connectedDev==true)textPanel.appendText("- Devices are connected\n");
-                textPanel.appendText("\nNotes: \n" + notes + "\n\n");
-
-                String toClipboard = textPanel.getText();
-                StringSelection stringSelection = new StringSelection(toClipboard);
-                Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-                clipboard.setContents(stringSelection, null);
-
-                textPanel.appendText("\n\n Text has been copied to clipboard!");
-            }
-        });
-
-        telradForm.setStringListener(new StringListener() {
-            public void textEmitted(String text) {
-                if(text == "newTicket") {
-                    remove(telradForm);
-                    remove(textPanel);
-                    selectionPanel();
-                }
-            }
-        });
-        remove(selectionPanel);
-        setSize(720, 500);
-    }
-    private void mimosaGUI() {
-        mimosaForm = new MimosaForm();
-        textPanel = new TextPanel();
-        add(mimosaForm, BorderLayout.WEST);
-
-        mimosaForm.setFormListener(new MimosaListener() {
-            public void FormEventOccurred(MimosaEvent e) {
-                String signal = e.getSignal();
-                String ap = e.getConnectedAP();
-                String lan = e.getLanSpeed();
-                String ping = e.getPing();
-                String comp = e.getComplaint();
-                String notes = e.getNotes();
-                boolean pwrcy = e.isPwrcy();
-                boolean down = e.isDown();
-                boolean rcable = e.isrCable();
-                boolean vmac = e.isvMac();
-                boolean connectedDev = e.isConnectedDevices();
-                boolean downStart = e.isDownAtStart();
-
-                setSize(1100, 550);
-                add(textPanel, BorderLayout.CENTER);
-                textPanel.appendText("Mimosa\n\n");
-                if(downStart==true)textPanel.appendText("- Radio was down at the start\n\n");
-                if(down==false) {
-                    textPanel.appendText("Connected AP: " + ap + "\n\n" 
-                            + "Complaint: \n" + comp + "\n\n"
-                            + "Signal: -" + signal + "\n"
-                            + "LAN Speed: " + lan + "\n"
-                            + "Ping: " + ping + "ms\n\n");
-                } else {
-                    textPanel.appendText("Complaint: \n" + comp + "\n\n");
-                }
-                textPanel.appendText("Troubleshooting Checklist: \n");
-                if(pwrcy==true)textPanel.appendText("- PowerCycled\n");
-                if(rcable==true)textPanel.appendText("- Reseated Cables\n");
-                if(vmac==true)textPanel.appendText("- Verified Router MAC\n");
-                if(connectedDev==true)textPanel.appendText("- Devices are connected\n");
-                textPanel.appendText("\nNotes: \n" + notes + "\n\n");
-
-                String toClipboard = textPanel.getText();
-                StringSelection stringSelection = new StringSelection(toClipboard);
-                Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-                clipboard.setContents(stringSelection, null);
-
-                textPanel.appendText("\n\n Text has been copied to clipboard!");
-            }
-        });
-
-        mimosaForm.setStringListener(new StringListener() {
-            public void textEmitted(String text) {
-                if(text == "newTicket") {
-                    remove(mimosaForm);
-                    remove(textPanel);
-                    selectionPanel();
-                }
-            }
-
-        });
-        remove(selectionPanel);
-        setSize(720, 550);
-    }
-    private void camGUI() {
-        cambiumForm = new CambiumForm();
-        textPanel = new TextPanel();
-        add(cambiumForm, BorderLayout.WEST);
-
-        cambiumForm.setFormListener(new CambiumListener() {
-            public void FormEventOccurred(CambiumEvent e) {
-                String signal = e.getSignal();
-                String sinr = e.getSinr();
-                String ap = e.getConnectedAP();
-                String lan = e.getLanSpeed();
-                String ping = e.getPing();
-                String complaint = e.getComplaint();
-                String notes = e.getNotes();
-                boolean pwrcy = e.isPwrcy();
-                boolean down = e.isDown();
-                boolean rcable = e.isrCable();
-                boolean vmac = e.isvMac();
-                boolean connectedDev = e.isConnectedDevices();
-                boolean downStart = e.isDownAtStart();
-                setSize(1100, 550);
-                add(textPanel, BorderLayout.CENTER);
-                textPanel.appendText("Cambium\n\n");
-                if(downStart==true)textPanel.appendText("- Radio was down at the start\n\n");
-                if(down==false) {
-                    textPanel.appendText("Connected AP: " + ap + "\n\n" 
-                            + "Complaint: \n" + complaint + "\n\n"
-                            + "Signal: -" + signal + "\n"
-                            + "SINR: " + sinr + "\n"
-                            + "LAN Speed: " + lan + "\n"
-                            + "Ping: " + ping + "ms\n\n");
-                } else {
-                    textPanel.appendText("Complaint: \n" + complaint + "\n\n");
-                }
-                textPanel.appendText("Troubleshooting Checklist: \n");
-                if(pwrcy==true)textPanel.appendText("- PowerCycled\n");
-                if(rcable==true)textPanel.appendText("- Reseated Cables\n");
-                if(vmac==true)textPanel.appendText("- Verified Router MAC\n");
-                if(connectedDev==true)textPanel.appendText("- Devices are connected\n");
-                textPanel.appendText("\nNotes: \n" + notes + "\n\n");
-                
-                String toClipboard = textPanel.getText();
-                StringSelection stringSelection = new StringSelection(toClipboard);
-                Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-                clipboard.setContents(stringSelection, null);
-
-                textPanel.appendText("\n\n Text has been copied to clipboard!");
-            }
-        });
-
-        cambiumForm.setStringListener(new StringListener() {
-            public void textEmitted(String text) {
-                if(text == "newTicket") {
-                    remove(cambiumForm);
-                    remove(textPanel);
-                    selectionPanel();
-                }
-            } 
-        });
-        setSize(720, 550);
-        remove(selectionPanel);
+    private void setCurrForm(String form) {
+        this.currForm = form;
     }
 }
