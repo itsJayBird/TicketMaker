@@ -28,6 +28,7 @@ public class Form extends JPanel implements Ubnt, Telrad, Cambium, Mimosa {
     private JTextField sinr1;
     private JTextField lan;
     private JTextField ping;
+    private JTextField bandwidth;
     private JComboBox complaint;
     private FormListener formListener;
     private BufferedImage image;
@@ -37,6 +38,15 @@ public class Form extends JPanel implements Ubnt, Telrad, Cambium, Mimosa {
         switch(formType) {
         case "ubnt":
             buildUbntForm();
+            break;
+        case "mimosa":
+            buildMimosaForm();
+            break;
+        case "cambium":
+            buildCambiumForm();
+            break;
+        case "telrad":
+            buildTelradForm();
             break;
         default:
             imagePanel();
@@ -69,7 +79,8 @@ public class Form extends JPanel implements Ubnt, Telrad, Cambium, Mimosa {
         sinr1 = new JTextField(5);
         lan = new JTextField(8);
         ping = new JTextField(5);
-        ap = new JTextField(8);
+        bandwidth = new JTextField(5);
+        ap = new JTextField(17);
         complaint = new JComboBox();
         setComplaints();
         // create panel border 
@@ -93,11 +104,11 @@ public class Form extends JPanel implements Ubnt, Telrad, Cambium, Mimosa {
         add(complaint, gc);
 
         // second row //
-        gc.gridx = 0;
+        gc.gridx = 1;
         gc.gridy++;
         gc.anchor = GridBagConstraints.LINE_END;
         add(new JLabel("Connected AP: "), gc);
-        gc.gridx = 1;
+        gc.gridx = 2;
         gc.anchor = GridBagConstraints.LINE_START;
         add(ap, gc);
 
@@ -154,12 +165,23 @@ public class Form extends JPanel implements Ubnt, Telrad, Cambium, Mimosa {
         gc.gridx = 1;
         gc.anchor = GridBagConstraints.LINE_START;
         add(lan, gc);
-        gc.gridx = 2;
+
+        // sixth row //
+        gc.gridy++;
+        gc.gridx = 0;
         gc.anchor = GridBagConstraints.LINE_END;
         add(new JLabel("Ping: "), gc);
-        gc.gridx = 3;
+        gc.gridx = 1;
         gc.anchor = GridBagConstraints.LINE_START;
         add(ping, gc);
+        ping.setEnabled(false);
+        gc.gridx = 2;
+        gc.anchor = GridBagConstraints.LINE_END;
+        add(new JLabel("Bandwidth: "), gc);
+        gc.gridx = 3;
+        gc.anchor = GridBagConstraints.LINE_START;
+        add(bandwidth, gc);
+        bandwidth.setEnabled(false);
 
     }
     public void disableUbnt() {
@@ -170,7 +192,7 @@ public class Form extends JPanel implements Ubnt, Telrad, Cambium, Mimosa {
         sinr0.setEnabled(false);
         sinr1.setEnabled(false);
         lan.setEnabled(false);
-        ping.setEnabled(false);
+        ap.setEnabled(false);
     }
     public void enableUbnt() {
         signal0.setEnabled(true);
@@ -180,25 +202,350 @@ public class Form extends JPanel implements Ubnt, Telrad, Cambium, Mimosa {
         sinr0.setEnabled(true);
         sinr1.setEnabled(true);
         lan.setEnabled(true);
-        ping.setEnabled(true);
+        ap.setEnabled(true);
+    }
+    public void getUbntInfo() {
+        String comp = (String)complaint.getSelectedItem();
+        String a = ap.getText();
+        String loSignal = signal0.getText();
+        String reSignal = signal1.getText();
+        String loChains = chain0.getText();
+        String reChains = chain1.getText();
+        String loNoise = sinr0.getText();
+        String reNoise = sinr1.getText();
+        String lanSpeed = lan.getText();
+        String p = ping.getText();
+        String band = bandwidth.getText();
+        FormEvent ev = new FormEvent(this, comp, a, loSignal, reSignal, 
+                loChains, reChains, loNoise, reNoise, lanSpeed,
+                p, band);
+        if(formListener != null) {
+            formListener.formEventOccured(ev);
+        }
     }
     public void buildMimosaForm() {
-        // TODO Auto-generated method stub
+        // set width
+        Dimension dim = getPreferredSize();
+        dim.width = 550;
+        setPreferredSize(dim);
+        // create needed boxes
+        signal0 = new JTextField(5);
+        lan = new JTextField(8);
+        ping = new JTextField(5);
+        bandwidth = new JTextField(5);
+        ap = new JTextField(17);
+        complaint = new JComboBox();
+        setComplaints();
+        // create panel border 
+        Border innerBorder = BorderFactory.createTitledBorder("Mimosa");
+        Border outerBorder = BorderFactory.createEmptyBorder(5, 5, 5, 5 );
+        setBorder(BorderFactory.createCompoundBorder(outerBorder, innerBorder));
+
+        // set components
+        setLayout(new GridBagLayout());
+        GridBagConstraints gc = new GridBagConstraints();
+        
+        // first row //
+        gc.gridx = 1;
+        gc.gridy = 0;
+        gc.weightx = 1;
+        gc.weighty = 0.1;
+        gc.anchor = GridBagConstraints.LINE_END;
+        add(new JLabel("Complaint: "), gc);
+        gc.gridx = 2;
+        gc.anchor = GridBagConstraints.LINE_START;
+        add(complaint, gc);
+
+        // second row //
+        gc.gridx = 1;
+        gc.gridy++;
+        gc.anchor = GridBagConstraints.LINE_END;
+        add(new JLabel("Connected AP: "), gc);
+        gc.gridx = 2;
+        gc.anchor = GridBagConstraints.LINE_START;
+        add(ap, gc);
+
+        // second row //
+        gc.gridy++;
+        gc.gridx = 0;
+        gc.anchor = GridBagConstraints.LINE_END;
+        add(new JLabel("Signal: "), gc);
+        gc.gridx = 1;
+        gc.anchor = GridBagConstraints.LINE_START;
+        add(signal0, gc);
+        gc.gridx = 2;
+        gc.anchor = GridBagConstraints.LINE_END;
+        add(new JLabel("LAN Speed: "), gc);
+        gc.gridx = 3;
+        gc.anchor = GridBagConstraints.LINE_START;
+        add(lan, gc);
+
+        // third row //
+        gc.gridy++;
+        gc.gridx = 0;
+        gc.anchor = GridBagConstraints.LINE_END;
+        add(new JLabel("Ping: "), gc);
+        gc.gridx = 1;
+        gc.anchor = GridBagConstraints.LINE_START;
+        add(ping, gc);
+        ping.setEnabled(false);
+        gc.gridx = 2;
+        gc.anchor = GridBagConstraints.LINE_END;
+        add(new JLabel("Bandwidth: "), gc);
+        gc.gridx = 3;
+        gc.anchor = GridBagConstraints.LINE_START;
+        add(bandwidth, gc);
+        bandwidth.setEnabled(false);
     }
-    public void setMimosaForm() {
-        // TODO Auto-generated method stub
+    public void getMimosaInfo() {
+        String comp = (String)complaint.getSelectedItem();
+        String a = ap.getText();
+        String Signal = signal0.getText();
+        String lanSpeed = lan.getText();
+        String p = ping.getText();
+        String bwidth = bandwidth.getText();
+        FormEvent ev = new FormEvent(this, comp, a, Signal,lanSpeed, p, bwidth);
+        if(formListener != null) {
+            formListener.formEventOccured(ev);
+        }
+    }
+    public void enableMimosa() {
+        signal0.setEnabled(true);
+        lan.setEnabled(true);
+        ap.setEnabled(true);
+    }
+    public void disableMimosa() {
+        signal0.setEnabled(false);
+        lan.setEnabled(false);
+        ap.setEnabled(false);
     }
     public void buildCambiumForm() {
-        // TODO Auto-generated method stub
+        // set width
+        Dimension dim = getPreferredSize();
+        dim.width = 550;
+        setPreferredSize(dim);
+        // create needed boxes
+        signal0 = new JTextField(5);
+        lan = new JTextField(8);
+        ping = new JTextField(5);
+        bandwidth = new JTextField(5);
+        ap = new JTextField(17);
+        complaint = new JComboBox();
+        sinr0 = new JTextField(5);
+        setComplaints();
+        // create panel border 
+        Border innerBorder = BorderFactory.createTitledBorder("Cambium");
+        Border outerBorder = BorderFactory.createEmptyBorder(5, 5, 5, 5 );
+        setBorder(BorderFactory.createCompoundBorder(outerBorder, innerBorder));
+
+        // set components
+        setLayout(new GridBagLayout());
+        GridBagConstraints gc = new GridBagConstraints();
+        
+        // first row //
+        gc.gridx = 1;
+        gc.gridy = 0;
+        gc.weightx = 1;
+        gc.weighty = 0.1;
+        gc.anchor = GridBagConstraints.LINE_END;
+        add(new JLabel("Complaint: "), gc);
+        gc.gridx = 2;
+        gc.anchor = GridBagConstraints.LINE_START;
+        add(complaint, gc);
+
+        // second row //
+        gc.gridx = 1;
+        gc.gridy++;
+        gc.anchor = GridBagConstraints.LINE_END;
+        add(new JLabel("Color Code / AP: "), gc);
+        gc.gridx = 2;
+        gc.anchor = GridBagConstraints.LINE_START;
+        add(ap, gc);
+
+        // second row //
+        gc.gridy++;
+        gc.gridx = 0;
+        gc.anchor = GridBagConstraints.LINE_END;
+        add(new JLabel("Signal: "), gc);
+        gc.gridx = 1;
+        gc.anchor = GridBagConstraints.LINE_START;
+        add(signal0, gc);
+        gc.gridx = 2;
+        gc.anchor = GridBagConstraints.LINE_END;
+        add(new JLabel("SINR: "), gc);
+        gc.gridx = 3;
+        gc.anchor = GridBagConstraints.LINE_START;
+        add(sinr0, gc);
+
+        // third row //
+        gc.gridy++;
+        gc.gridx = 0;
+        gc.anchor = GridBagConstraints.LINE_END;
+        add(new JLabel("LAN Speed: "), gc);
+        gc.gridx = 1;
+        gc.anchor = GridBagConstraints.LINE_START;
+        add(lan, gc);
+        
+        // fourth row //
+        gc.gridy++;
+        gc.gridx = 0;
+        gc.anchor = GridBagConstraints.LINE_END;
+        add(new JLabel("Ping: "), gc);
+        gc.gridx = 1;
+        gc.anchor = GridBagConstraints.LINE_START;
+        add(ping, gc);
+        ping.setEnabled(false);
+        gc.gridx = 2;
+        gc.anchor = GridBagConstraints.LINE_END;
+        add(new JLabel("Bandwidth: "), gc);
+        gc.gridx = 3;
+        gc.anchor = GridBagConstraints.LINE_START;
+        add(bandwidth, gc);
+        bandwidth.setEnabled(false);
     }
-    public void setCambiumForm() {
-        // TODO Auto-generated method stub
+    public void getCambiumInfo() {
+        String comp = (String)complaint.getSelectedItem();
+        String a = ap.getText();
+        String Signal = signal0.getText();
+        String lanSpeed = lan.getText();
+        String sinr = sinr0.getText();
+        String p = ping.getText();
+        String bwidth = bandwidth.getText();
+        FormEvent ev = new FormEvent(this, comp, a, Signal,lanSpeed, p, sinr, bwidth);
+        if(formListener != null) {
+            formListener.formEventOccured(ev);
+        }
+    }
+    public void enableCambium() {
+        signal0.setEnabled(true);
+        lan.setEnabled(true);
+        ap.setEnabled(true);
+        sinr0.setEnabled(true);
+    }
+    public void disableCambium() {
+        signal0.setEnabled(false);
+        lan.setEnabled(false);
+        ap.setEnabled(false);
+        sinr0.setEnabled(false);
     }
     public void buildTelradForm() {
-        // TODO Auto-generated method stub
+        // set width
+        Dimension dim = getPreferredSize();
+        dim.width = 550;
+        setPreferredSize(dim);
+        // create needed boxes
+        signal0 = new JTextField(5);
+        sinr0 = new JTextField(5);
+        chain0 = new JTextField(5);
+        chain1 = new JTextField(5);
+        ping = new JTextField(5);
+        bandwidth = new JTextField(5);
+        ap = new JTextField(17);
+        complaint = new JComboBox();
+        setComplaints();
+        // create panel border 
+        Border innerBorder = BorderFactory.createTitledBorder("Telrad");
+        Border outerBorder = BorderFactory.createEmptyBorder(5, 5, 5, 5 );
+        setBorder(BorderFactory.createCompoundBorder(outerBorder, innerBorder));
+
+        // set components
+        setLayout(new GridBagLayout());
+        GridBagConstraints gc = new GridBagConstraints();
+
+        // first row //
+        gc.gridx = 1;
+        gc.gridy = 0;
+        gc.weightx = 1;
+        gc.weighty = 0.1;
+        gc.anchor = GridBagConstraints.LINE_END;
+        add(new JLabel("Complaint: "), gc);
+        gc.gridx = 2;
+        gc.anchor = GridBagConstraints.LINE_START;
+        add(complaint, gc);
+
+        // second row //
+        gc.gridx = 1;
+        gc.gridy++;
+        gc.anchor = GridBagConstraints.LINE_END;
+        add(new JLabel("PCI: "), gc);
+        gc.gridx = 2;
+        gc.anchor = GridBagConstraints.LINE_START;
+        add(ap, gc);
+
+        // second row //
+        gc.gridy++;
+        gc.gridx = 0;
+        gc.anchor = GridBagConstraints.LINE_END;
+        add(new JLabel("Signal: "), gc);
+        gc.gridx = 1;
+        gc.anchor = GridBagConstraints.LINE_START;
+        add(signal0, gc);
+        gc.gridx = 2;
+        gc.anchor = GridBagConstraints.LINE_END;
+        add(new JLabel("SINR: "), gc);
+        gc.gridx = 3;
+        gc.anchor = GridBagConstraints.LINE_START;
+        add(sinr0, gc);
+
+        // third row //
+        gc.gridy++;
+        gc.gridx = 0;
+        gc.anchor = GridBagConstraints.LINE_END;
+        add(new JLabel("Cell: "), gc);
+        gc.gridx = 1;
+        gc.anchor = GridBagConstraints.LINE_START;
+        add(chain0, gc);
+        gc.gridx = 2;
+        gc.anchor = GridBagConstraints.LINE_END;
+        add(new JLabel("Cell Locked: "), gc);
+        gc.gridx = 3;
+        gc.anchor = GridBagConstraints.LINE_START;
+        add(chain1, gc);
+
+        // fourth row //
+        gc.gridy++;
+        gc.gridx = 0;
+        gc.anchor = GridBagConstraints.LINE_END;
+        add(new JLabel("Ping: "), gc);
+        gc.gridx = 1;
+        gc.anchor = GridBagConstraints.LINE_START;
+        add(ping, gc);
+        ping.setEnabled(false);
+        gc.gridx = 2;
+        gc.anchor = GridBagConstraints.LINE_END;
+        add(new JLabel("Bandwidth: "), gc);
+        gc.gridx = 3;
+        gc.anchor = GridBagConstraints.LINE_START;
+        add(bandwidth, gc);
+        bandwidth.setEnabled(false);
     }
-    public void setTelradForm() {
-        // TODO Auto-generated method stub
+    public void getTelradInfo() {
+        String comp = (String)complaint.getSelectedItem();
+        String a = ap.getText();
+        String Signal = signal0.getText();
+        String sinr = sinr0.getText();
+        String cell = chain0.getText();
+        String locked = chain1.getText();
+        String p = ping.getText();
+        String bwidth = bandwidth.getText();
+        FormEvent ev = new FormEvent(this, comp, a, Signal, p, sinr, cell, locked, bwidth);
+        if(formListener != null) {
+            formListener.formEventOccured(ev);
+        }
+    }
+    public void enableTelrad() {
+        ap.setEnabled(true);
+        signal0.setEnabled(true);
+        sinr0.setEnabled(true);
+        chain0.setEnabled(true);
+        chain1.setEnabled(true);
+    }
+    public void disableTelrad() {
+        ap.setEnabled(false);
+        signal0.setEnabled(false);
+        sinr0.setEnabled(false);
+        chain0.setEnabled(false);
+        chain1.setEnabled(false);
     }
     public void setComplaints() {
         //set up combo box with common complaints
@@ -212,28 +559,19 @@ public class Form extends JPanel implements Ubnt, Telrad, Cambium, Mimosa {
         complaint.setSelectedIndex(2);
         complaint.setEditable(true);
     }
+    public void enablePing() {
+        ping.setEnabled(true);
+    }
+    public void disablePing() {
+        ping.setEnabled(false);
+    }
+    public void enableBandwidth() {
+        bandwidth.setEnabled(true);
+    }
+    public void disableBandwidth() {
+        bandwidth.setEnabled(false);
+    }
     public void setFormListener(FormListener listener) {
         this.formListener = listener;
-    }
-
-    @Override
-    public void getUbntInfo() {
-        if(formListener != null) {
-            String comp = (String)complaint.getSelectedItem();
-            String a = ap.getText();
-            String loSignal = signal0.getText();
-            String reSignal = signal1.getText();
-            String loChains = chain0.getText();
-            String reChains = chain1.getText();
-            String loNoise = sinr0.getText();
-            String reNoise = sinr1.getText();
-            String lanSpeed = lan.getText();
-            String p = ping.getText();
-            FormEvent ev = new FormEvent(this, comp, a, loSignal, reSignal, 
-                    loChains, reChains, loNoise, reNoise, lanSpeed,
-                    p);
-            formListener.formEventOccured(ev);
-        }
-
     }
 }

@@ -17,6 +17,8 @@ public class CheckEvent extends EventObject {
     private boolean upgradeRouter;
     private boolean upgradeRadio;
     private boolean radioStillDown;
+    private boolean checkPing;
+    private boolean checkBandwidth;
     
     public CheckEvent(Object source) {
         super(source);
@@ -38,6 +40,12 @@ public class CheckEvent extends EventObject {
         this.upgradeRouter = upRouter;
         this.upgradeRadio = upRadio;
         this.radioStillDown = stillDown;
+    }
+    public boolean isCheckPing() {
+        return checkPing;
+    }
+    public boolean isCheckBandwidth() {
+        return checkBandwidth;
     }
     public boolean isRadioDownAtStart() {
         return radioDownAtStart;

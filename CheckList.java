@@ -24,9 +24,13 @@ public class CheckList extends JPanel {
     private JCheckBox radioDownAtStart;
     private JCheckBox radioStillDown;
     private JCheckBox custRouter;
+    private JCheckBox checkPing;
+    private JCheckBox checkBandwidth;
     
     private CheckEventListener checkEventListener;
     private RadioDownListener radioDownListener;
+    private PingListener pingListener;
+    private BandwidthListener bandwidthListener;
     
     public CheckList() {
         Dimension dim = getPreferredSize();
@@ -46,12 +50,30 @@ public class CheckList extends JPanel {
         devicesConnected = new JCheckBox("Devices Connected");
         radioDownAtStart = new JCheckBox("Radio Was Down at the Start");
         radioStillDown = new JCheckBox("Radio Still Down");
+        checkPing = new JCheckBox("Checked Ping");
+        checkBandwidth = new JCheckBox("Checked Bandwidth");
         
         radioStillDown.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 boolean down = radioStillDown.isSelected();
                 if(radioDownListener != null) {
                     radioDownListener.booleanEmitted(down);
+                }
+            }
+        });
+        checkPing.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                boolean chkPing = checkPing.isSelected();
+                if(pingListener != null) {
+                    pingListener.booleanEmitted(chkPing);
+                }
+            }
+        });
+        checkBandwidth.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                boolean chkBand = checkBandwidth.isSelected();
+                if(bandwidthListener != null) {
+                    bandwidthListener.booleanEmitted(chkBand);
                 }
             }
         });
@@ -68,6 +90,8 @@ public class CheckList extends JPanel {
         add(devicesConnected);
         add(upgradeRouter);
         add(upgradeRadio);
+        add(checkPing);
+        add(checkBandwidth);
         add(radioStillDown);
         
         Border innerBorder = BorderFactory.createTitledBorder("Checklist");
@@ -89,7 +113,8 @@ public class CheckList extends JPanel {
         boolean stillDown = radioStillDown.isSelected();
         
         CheckEvent ev = new CheckEvent(this, downStart, powerRadio, powerRouter, cxRouter, reCable,
-                                       reCable, verCable, verPower, verMAC, mAP, upRouter, upRadio, stillDown);
+                                       reCable, verCable, verPower, verMAC, mAP, upRouter, upRadio, 
+                                       stillDown);
         if(checkEventListener != null) {
             checkEventListener.checkEventOccured(ev);
         }
@@ -99,6 +124,12 @@ public class CheckList extends JPanel {
     }
     public void setRadioDownListener(RadioDownListener radioDownListener) {
         this.radioDownListener = radioDownListener;
+    }
+    public void setPingListener(PingListener pingListener) {
+        this.pingListener = pingListener;
+    }
+    public void setBandwidthListener(BandwidthListener bandwidthListener) {
+        this.bandwidthListener = bandwidthListener;
     }
     
 }
