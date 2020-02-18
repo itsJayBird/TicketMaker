@@ -14,7 +14,7 @@ public class Notes extends JPanel {
     private StringListener stringListener;
     
     public Notes(){
-        notes = new JTextArea(22, 30);
+        notes = new JTextArea(10, 48);
         notes.setLineWrap(true);
         notes.setEditable(true);
         scroll = new JScrollPane(notes);

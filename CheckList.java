@@ -33,9 +33,9 @@ public class CheckList extends JPanel {
     private BandwidthListener bandwidthListener;
     
     public CheckList() {
-        Dimension dim = getPreferredSize();
-        dim.width = 260;
-        setPreferredSize(dim);
+        //Dimension dim = getPreferredSize();
+        //dim.width = 260;
+        //setPreferredSize(dim);
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         powerCycleRadio = new JCheckBox("Power Cycle Radio");
         powerCycleRouter = new JCheckBox("Power Cycle Router");
@@ -108,13 +108,13 @@ public class CheckList extends JPanel {
         boolean verPower = verifiedPower.isSelected();
         boolean verMAC = verifiedMAC.isSelected();
         boolean mAP = movedAP.isSelected();
+        boolean devConnected = devicesConnected.isSelected();
         boolean upRouter = upgradeRouter.isSelected();
         boolean upRadio = upgradeRadio.isSelected();
         boolean stillDown = radioStillDown.isSelected();
         
         CheckEvent ev = new CheckEvent(this, downStart, powerRadio, powerRouter, cxRouter, reCable,
-                                       reCable, verCable, verPower, verMAC, mAP, upRouter, upRadio, 
-                                       stillDown);
+                                       verCable, verPower, verMAC, mAP, devConnected, upRouter, upRadio, stillDown);
         if(checkEventListener != null) {
             checkEventListener.checkEventOccured(ev);
         }

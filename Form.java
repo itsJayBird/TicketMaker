@@ -67,9 +67,9 @@ public class Form extends JPanel implements Ubnt, Telrad, Cambium, Mimosa {
 
     public void buildUbntForm() {
         // set width
-        Dimension dim = getPreferredSize();
-        dim.width = 550;
-        setPreferredSize(dim);
+        //Dimension dim = getPreferredSize();
+        //dim.width = 550;
+        //setPreferredSize(dim);
         // create needed boxes
         signal0 = new JTextField(5);
         signal1 = new JTextField(5);
@@ -225,9 +225,9 @@ public class Form extends JPanel implements Ubnt, Telrad, Cambium, Mimosa {
     }
     public void buildMimosaForm() {
         // set width
-        Dimension dim = getPreferredSize();
-        dim.width = 550;
-        setPreferredSize(dim);
+        //Dimension dim = getPreferredSize();
+        //dim.width = 550;
+        //setPreferredSize(dim);
         // create needed boxes
         signal0 = new JTextField(5);
         lan = new JTextField(8);
@@ -321,9 +321,9 @@ public class Form extends JPanel implements Ubnt, Telrad, Cambium, Mimosa {
     }
     public void buildCambiumForm() {
         // set width
-        Dimension dim = getPreferredSize();
-        dim.width = 550;
-        setPreferredSize(dim);
+        //Dimension dim = getPreferredSize();
+        //dim.width = 550;
+        //setPreferredSize(dim);
         // create needed boxes
         signal0 = new JTextField(5);
         lan = new JTextField(8);
@@ -430,9 +430,9 @@ public class Form extends JPanel implements Ubnt, Telrad, Cambium, Mimosa {
     }
     public void buildTelradForm() {
         // set width
-        Dimension dim = getPreferredSize();
-        dim.width = 550;
-        setPreferredSize(dim);
+        //Dimension dim = getPreferredSize();
+        //dim.width = 550;
+        //setPreferredSize(dim);
         // create needed boxes
         signal0 = new JTextField(5);
         sinr0 = new JTextField(5);

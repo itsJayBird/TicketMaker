@@ -1,6 +1,8 @@
 package ticketMaster;
 
 import java.awt.BorderLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
@@ -48,17 +50,16 @@ public class MainFrame extends JFrame implements FormListener, CheckEventListene
 
     public MainFrame() {
         super("Resound Ticket Builder");
-        setLayout(new BorderLayout());
+        setLayout(null);
         form = new Form("none");
         menu = new Menu();
-        checkList = new CheckList();
         notes = new Notes();
         confirm = new JButton("Confirm");
 
         menu.setStringListener(new StringListener() {
             public void textEmitted(String text) {
                 remove(form);
-                remove(checkList);
+                if(checkList != null)remove(checkList);
                 if(textPanel != null)remove(textPanel);
                 if(notes != null)remove(notes);
                 checkList = new CheckList();
@@ -113,14 +114,18 @@ public class MainFrame extends JFrame implements FormListener, CheckEventListene
                         }
                     }
                 });
-                
-                add(form, BorderLayout.WEST);
-                add(notes, BorderLayout.CENTER);
-                add(checkList, BorderLayout.EAST);
-                add(confirm, BorderLayout.SOUTH);
+                menu.setBounds(150, 15, 380, 30);
+                form.setBounds(10, 50, 610, 200);
+                add(form);
+                checkList.setBounds(620, 50, 270, 400);
+                add(checkList);
+                notes.setBounds(10, 250, 610, 200);
+                add(notes);
+                confirm.setBounds(270, 450, 100, 30);
+                add(confirm);
                 validate();
                 repaint();
-                setSize(1200, 470);
+                setSize(900, 530);
                 setCurrForm(text);
             }
         });
@@ -128,7 +133,8 @@ public class MainFrame extends JFrame implements FormListener, CheckEventListene
         confirm.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 remove(notes);
-                add(textPanel, BorderLayout.CENTER);
+                textPanel.setBounds(15, 260, 600, 180);
+                add(textPanel);
                 validate();
                 repaint();
                 notes.setStringListener(new StringListener() {
@@ -141,13 +147,14 @@ public class MainFrame extends JFrame implements FormListener, CheckEventListene
                 displayTicket();
             }
         });
-
-        add(menu, BorderLayout.NORTH);
-        add(form, BorderLayout.CENTER);
+        menu.setBounds(60, 0, 380, 50);
+        add(menu);
+        form.setBounds(80, 0, 400, 400);
+        add(form);
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setVisible(true);
-        setSize(500, 500);
+        setSize(500, 400);
         setResizable(false);
     }
 
@@ -226,17 +233,17 @@ public class MainFrame extends JFrame implements FormListener, CheckEventListene
 
         // next the checklist
         textPanel.appendText("\nTroubleshooting Checklist: \n\n");
-        if(powerCycleRadio==true){textPanel.appendText("- Power cycle radio for minimum of 2 min \n");}
-        if(powerCycleRouter==true){textPanel.appendText("- Power cycle router for a minimum of 2 min \n");}
-        if(custRouter==true){textPanel.appendText("- Customer owned router \n");}
-        if(reseatCable==true){textPanel.appendText("- Reseated cables \n");}
-        if(verifiedCable==true){textPanel.appendText("- Verified cable configuration \n");}
-        if(verifiedPower==true){textPanel.appendText("- Verified power to devices \n");}
-        if(verifiedMAC==true){textPanel.appendText("- Verified router MAC \n");}
-        if(movedAP==true){textPanel.appendText("- Moved to better serving AP \n");}
-        if(devicesConnected==true){textPanel.appendText("- Checked that devices are connected \n");}
-        if(upgradeRouter==true){textPanel.appendText("- Upgraded router firmware \n");}
-        if(upgradeRadio==true){textPanel.appendText("- Upgraded radio firmware \n");}
+        if(powerCycleRadio==true)textPanel.appendText("- Power cycle radio for minimum of 2 min \n");
+        if(powerCycleRouter==true)textPanel.appendText("- Power cycle router for a minimum of 2 min \n");
+        if(custRouter==true)textPanel.appendText("- Customer owned router \n");
+        if(reseatCable==true)textPanel.appendText("- Reseated cables \n");
+        if(verifiedCable==true)textPanel.appendText("- Verified cable positions \n");
+        if(verifiedPower==true)textPanel.appendText("- Verified power to equipment \n");
+        if(verifiedMAC==true)textPanel.appendText("- Verified router MAC \n");
+        if(movedAP==true)textPanel.appendText("- Moved to better serving AP \n");
+        if(devicesConnected==true)textPanel.appendText("- Checked that devices are connected \n");
+        if(upgradeRouter==true)textPanel.appendText("- Upgraded router firmware \n");
+        if(upgradeRadio==true)textPanel.appendText("- Upgraded radio firmware \n");
 
         // finally notes
         textPanel.appendText("\nNotes: \n\n" + note);
