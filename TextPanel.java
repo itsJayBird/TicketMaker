@@ -1,4 +1,4 @@
-package ticketMaker;
+package ticketMaster;
 
 import java.awt.BorderLayout;
 
