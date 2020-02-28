@@ -26,6 +26,10 @@ public class CheckList extends JPanel {
     private JCheckBox custRouter;
     private JCheckBox checkPing;
     private JCheckBox checkBandwidth;
+    private JCheckBox checkEnds;
+    private JCheckBox calledRNA;
+    private JCheckBox leftVM;
+    private JCheckBox refuse;
     
     private CheckEventListener checkEventListener;
     private RadioDownListener radioDownListener;
@@ -33,25 +37,27 @@ public class CheckList extends JPanel {
     private BandwidthListener bandwidthListener;
     
     public CheckList() {
-        //Dimension dim = getPreferredSize();
-        //dim.width = 260;
-        //setPreferredSize(dim);
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+        radioDownAtStart = new JCheckBox("Radio Was Down at the Start");
         powerCycleRadio = new JCheckBox("Power Cycle Radio");
         powerCycleRouter = new JCheckBox("Power Cycle Router");
         custRouter = new JCheckBox("Customer Owned Router");
         reseatCable = new JCheckBox("Reseat Cables");
         verifiedCable = new JCheckBox("Verified Cable Positions");
-        movedAP = new JCheckBox("Moved AP/PCI");
         verifiedPower = new JCheckBox("Verified Power to Equipment");
-        upgradeRouter = new JCheckBox("Upgrade Router Firmware");
-        upgradeRadio = new JCheckBox("Upgrade Radio Firmware");
         verifiedMAC = new JCheckBox("Verified Router MAC");
         devicesConnected = new JCheckBox("Devices Connected");
-        radioDownAtStart = new JCheckBox("Radio Was Down at the Start");
+        upgradeRouter = new JCheckBox("Upgrade Router Firmware");
+        upgradeRadio = new JCheckBox("Upgrade Radio Firmware");
+        movedAP = new JCheckBox("Moved AP/PCI");
         radioStillDown = new JCheckBox("Radio Still Down");
         checkPing = new JCheckBox("Checked Ping");
         checkBandwidth = new JCheckBox("Checked Bandwidth");
+        checkEnds = new JCheckBox("Checked Cable Ends");
+        calledRNA = new JCheckBox("Called No Answer");
+        leftVM = new JCheckBox("Left Voicemail");
+        refuse = new JCheckBox("Refused to Troubleshoot");
+        
         
         radioStillDown.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -84,14 +90,18 @@ public class CheckList extends JPanel {
         add(custRouter);
         add(reseatCable);
         add(verifiedCable);
+        add(checkEnds);
         add(verifiedPower);
         add(verifiedMAC);
-        add(movedAP);
         add(devicesConnected);
         add(upgradeRouter);
         add(upgradeRadio);
+        add(movedAP);
         add(checkPing);
         add(checkBandwidth);
+        add(calledRNA);
+        add(leftVM);
+        add(refuse);
         add(radioStillDown);
         
         Border innerBorder = BorderFactory.createTitledBorder("Checklist");
@@ -112,9 +122,14 @@ public class CheckList extends JPanel {
         boolean upRouter = upgradeRouter.isSelected();
         boolean upRadio = upgradeRadio.isSelected();
         boolean stillDown = radioStillDown.isSelected();
+        boolean called = calledRNA.isSelected();
+        boolean vm = leftVM.isSelected();
+        boolean ref = refuse.isSelected();
+        boolean chkEnd = checkEnds.isSelected();
         
         CheckEvent ev = new CheckEvent(this, downStart, powerRadio, powerRouter, cxRouter, reCable,
-                                       verCable, verPower, verMAC, mAP, devConnected, upRouter, upRadio, stillDown);
+                                       verCable, verPower, verMAC, mAP, devConnected, upRouter, upRadio, 
+                                       stillDown, called, vm, ref, chkEnd);
         if(checkEventListener != null) {
             checkEventListener.checkEventOccured(ev);
         }
