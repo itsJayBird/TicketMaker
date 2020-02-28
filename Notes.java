@@ -1,6 +1,6 @@
 package ticketMaster;
 
-import java.awt.FlowLayout;
+import java.awt.BorderLayout;
 
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
@@ -14,13 +14,13 @@ public class Notes extends JPanel {
     private StringListener stringListener;
     
     public Notes(){
-        notes = new JTextArea(10, 48);
+        notes = new JTextArea();
         notes.setLineWrap(true);
         notes.setEditable(true);
         scroll = new JScrollPane(notes);
         
-        setLayout(new FlowLayout());
-        add(scroll);
+        setLayout(new BorderLayout());
+        add(scroll, BorderLayout.CENTER);
         
         Border innerBorder = BorderFactory.createTitledBorder("Notes");
         Border outerBorder = BorderFactory.createEmptyBorder(5, 5, 5, 5 );
