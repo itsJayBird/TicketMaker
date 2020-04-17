@@ -1,6 +1,7 @@
 package ticketMaster;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
@@ -17,6 +18,7 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -26,12 +28,29 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 public class MainFrame extends JFrame implements FormListener, CheckEventListener {
+    // main components
     private JTabbedPane container;
+    private Outage outg;
     private CheckList checkList;
     private JButton confirm;
-    private int currForm;
     private TextPanel textPanel;
     private Notes notes;
+    private Form u;
+    private Form t;
+    private Form m;
+    private Form c;
+    private JButton reset;
+    private BufferedImage name;
+    private BufferedImage logo;
+    JPanel center;
+    JPanel checkContainer;
+    JToolBar checkBar;
+    JToolBar buttons;
+    // mode switch components
+    JPanel modes;
+    JCheckBox outage;
+    JCheckBox install;
+    // needed vars to pull from forms
     private String complaint;
     private String ap;
     private String signal0;
@@ -44,6 +63,7 @@ public class MainFrame extends JFrame implements FormListener, CheckEventListene
     private String ping;
     private String bandwidth;
     private String note;
+    private int currForm;
     private boolean radioDownAtStart;
     private boolean powerCycleRadio;
     private boolean powerCycleRouter;
@@ -63,18 +83,7 @@ public class MainFrame extends JFrame implements FormListener, CheckEventListene
     private boolean calledRNA;
     private boolean leftVM;
     private boolean refuse;
-
-    private Form u;
-    private Form t;
-    private Form m;
-    private Form c;
-    private JButton reset;
-    private BufferedImage name;
-    private BufferedImage logo;
-    JPanel center;
-    JPanel checkContainer;
-    JToolBar checkBar;
-    JToolBar buttons;
+    private boolean conClicked = false;
 
     public MainFrame() {
         super("Resound Ticket Builder");
@@ -96,15 +105,22 @@ public class MainFrame extends JFrame implements FormListener, CheckEventListene
         container.addTab("Telrad", t);
         container.addTab("Mimosa" , m);
         container.addTab("Cambium", c);
-        container.setBorder(BorderFactory.createEmptyBorder(20, 0, 50, 0));
+        container.setBorder(BorderFactory.createEmptyBorder(20, 0, 10, 0));
         checkList = new CheckList();
         reset = new JButton("Reset");
         JToolBar hl = new JToolBar();
         JButton help = new JButton("?");
+        modes = new JPanel();
+        modes.setLayout(new BoxLayout(modes, BoxLayout.Y_AXIS));
+        modes.setBorder(BorderFactory.createEtchedBorder());
+        outage = new JCheckBox("Outage Mode");
+        install = new JCheckBox("Install Check Mode");
 
         try {
-            name = ImageIO.read(getClass().getClassLoader().getResource("ticketMaster/logo_name1.png"));
-            logo = ImageIO.read(getClass().getClassLoader().getResource("ticketMaster/logo_1.png"));
+            //name = ImageIO.read(getClass().getClassLoader().getResource("ticketMaster/logo_name1.png"));
+            //logo = ImageIO.read(getClass().getClassLoader().getResource("ticketMaster/logo_1.png"));
+            name = ImageIO.read(new File("logo_name1.png"));
+            logo = ImageIO.read(new File("logo_1.png"));
         } catch (IOException e1) {
             e1.printStackTrace();
         }
@@ -124,32 +140,47 @@ public class MainFrame extends JFrame implements FormListener, CheckEventListene
             }
         });
 
+        outage.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                if(outage.isSelected()==true) {
+                    center.remove(container);
+                    container = new JTabbedPane();
+                    outg = new Outage();
+                    container.addTab("Outage", outg);
+                    center.add(container);
+                    repaint();
+                    validate();
+                }
+            }
+        });
         confirm.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                center.remove(notes);
-                center.remove(container);
-                textPanel = new TextPanel();
-                textPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 60, 0));
-                center.add(textPanel);
-                center.repaint();
-                center.validate();
-                repaint();
-                validate();
-                validate();
-                repaint();
-                notes.setStringListener(new StringListener() {
-                    public void textEmitted(String text) {
-                        note = text;
-                    }
-                });
-                getFormStats();
-                getCheckList();
-                displayTicket();
+                if(conClicked==false) {
+                    center.remove(notes);
+                    center.remove(container);
+                    textPanel = new TextPanel();
+                    textPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 60, 0));
+                    center.add(textPanel);
+                    center.repaint();
+                    center.validate();
+                    repaint();
+                    validate();
+                    notes.setStringListener(new StringListener() {
+                        public void textEmitted(String text) {
+                            note = text;
+                        }
+                    });
+                    getFormStats();
+                    getCheckList();
+                    displayTicket();
+                }
+                conClicked = true;
             }
         });
 
         reset.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent arg0) {
+                conClicked = false;
                 center.remove(container);
                 checkContainer.remove(checkList);
                 center.remove(notes);
@@ -167,7 +198,7 @@ public class MainFrame extends JFrame implements FormListener, CheckEventListene
                 checkList = new CheckList();
                 checkListeners();
                 center.add(container);
-                container.setBorder(BorderFactory.createEmptyBorder(20, 0, 50, 0));
+                container.setBorder(BorderFactory.createEmptyBorder(20, 0, 10, 0));
                 center.add(notes);
                 center.repaint();
                 center.validate();
@@ -176,6 +207,14 @@ public class MainFrame extends JFrame implements FormListener, CheckEventListene
                 checkContainer.validate();
                 repaint();
                 validate();
+            }
+        });
+        outage.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                if(outage.isSelected()==true) {
+                    center.remove(container);
+                    center.remove(notes);
+                }
             }
         });
 
@@ -189,21 +228,26 @@ public class MainFrame extends JFrame implements FormListener, CheckEventListene
         n.setContentAreaFilled(false);
         l.setBorder(BorderFactory.createEmptyBorder());
         l.setContentAreaFilled(false);
+        modes.add(install);
+        modes.add(outage);
+        checkBar.add(modes);
         checkBar.add(Box.createHorizontalGlue()); // create some glue so that it will align right
         checkBar.add(l);
         checkBar.add(n);
+        checkBar.add(Box.createHorizontalStrut(10));
         checkBar.setFloatable(false);
         checkBar.setOpaque(false);
         checkBar.setBorderPainted(false);
         checkContainer.add(checkBar, BorderLayout.SOUTH); // adding the images to the bottom of the check list container
         // creating the button toolbar
-        JLabel disclaimer = new JLabel("Version 0.3.0  ");
+        JLabel disclaimer = new JLabel("Version 0.3.0");
         disclaimer.setFont(new Font("Arial", 10, 10));
         buttons.add(Box.createHorizontalGlue());
         buttons.add(confirm);
         buttons.add(reset);
         buttons.add(Box.createHorizontalGlue());
         buttons.add(disclaimer);
+        buttons.add(Box.createHorizontalStrut(10));
         buttons.setFloatable(false);
         buttons.setOpaque(false);
         // adding components to main frame
@@ -214,6 +258,7 @@ public class MainFrame extends JFrame implements FormListener, CheckEventListene
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setVisible(true);
         setSize(900, 610);
+        setMinimumSize(new Dimension(900, 610));
         setResizable(true);
     }
     private void getFormStats() {
@@ -449,7 +494,7 @@ public class MainFrame extends JFrame implements FormListener, CheckEventListene
         container.addTab("Mimosa" , m);
         container.addTab("Cambium", c);
         center.add(container);
-        container.setBorder(BorderFactory.createEmptyBorder(20, 0, 50, 0));
+        container.setBorder(BorderFactory.createEmptyBorder(20, 0, 10, 0));
         center.validate();
         center.repaint();
     }

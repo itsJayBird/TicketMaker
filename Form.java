@@ -1,6 +1,7 @@
 package ticketMaster;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.image.BufferedImage;
@@ -43,19 +44,10 @@ public class Form extends JPanel implements Ubnt, Telrad, Cambium, Mimosa {
             break;
         }
     }
-
-//    private void imagePanel() {
-//        setLayout(new BorderLayout());
-//        try {
-//            BufferedImage bg = ImageIO.read(getClass().getClassLoader().getResource("logo.png"));
-//            add(new JLabel(new ImageIcon(bg)), BorderLayout.CENTER);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//        
-//    }
-
     public void buildUbntForm() {
+        Dimension dim = new Dimension();
+        dim.height = 250;
+        setPreferredSize(dim);
         signal0 = new JTextField(5);
         signal1 = new JTextField(5);
         chain0 = new JTextField(5);
@@ -486,6 +478,7 @@ public class Form extends JPanel implements Ubnt, Telrad, Cambium, Mimosa {
         complaints.addElement("Intermittent Connection");
         complaints.addElement("Slow Speeds");
         complaints.addElement("Router Support");
+        complaints.addElement("Follow Up");
         complaint.setModel(complaints);
         complaint.setSelectedIndex(2);
         complaint.setEditable(true);
